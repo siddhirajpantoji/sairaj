@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insure</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+
+
+    <style>
+        .top-buffer {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">ABC Insurance</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
+    <div class="container">
+        <div id="errorMessages" class="alert alert-danger">
+
+        </div>
+        <div id="inputData">
+            <form id="form1">
+                <div class="form-group">
+                    <label for="policyStartDate">Policy Start Date </label>
+
+                    <input type="text" id="policyStartDate" aria-describedby="emailHelp"
+                        placeholder="Enter Policy Start Date ">
+
+                </div>
+                <div class="form-group">
+                    <label for="customerName">Customer Name</label>
+                    <input type="text" class="form-control" id="customerName" placeholder="Enter Customer Name">
+                </div>
+                <div class="form-group">
+                    <label for="customerContact">Mobile Number</label>
+                    <input type="tel" class="form-control" id="customerContact" placeholder="Enter Mobile Number">
+                </div>
+                <div class="form-group">
+                    <label for="customerEmail">Email address</label>
+                    <input type="email" class="form-control" id="customerEmail" placeholder="Enter Email">
+                </div>
+                <div class="form-group">
+                    <label for="dateOfBirth">Enter Date of Birth</label>
+                    <input type="text" id="dateOfBirth" placeholder="Enter Date of Birth">
+                </div>
+                <div class="form-group">
+                    <label for="planType">Select Plan Type</label>
+                    <select class="form-control" id="planType">
+                        <option value="Monthly">Monthly</option>
+                        <option value="Annual">Annual</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="nomineeName">Select Plan Type</label>
+                    <input type="text" class="form-control" id="nomineeName" placeholder="Enter Nominee Name">
+                </div>
+                <button class="btn btn-primary" id="premiumCalculate">Calculate Premium</button>
+            </form>
+            <!--
+                Policy Start Date -> Date picker starts today ( YYYY-MM-DD)
+                Customer Name : textField 
+                Contact Number : textField 
+                Email id : textField
+                Date of Birth : date-pciker ( Should be greater than 18)
+                Plantype -> DropDown ( Monthly , Annual )
+                nominee Name : textField 
+            -->
+        </div>
+        <div id="quotation">
+
+        </div>
+    </div>
+    <footer class="bg-light text-center text-lg-start">
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2022 Copyright:
+            <a class="text-dark" href="#">ABC Insurance</a>
+        </div>
+        <!-- Copyright -->
+    </footer>
+    <script>
+        $(document).ready(function () {
+            // Hide all Div here 
+            $("#errorMessages").hide()
+            $("#quotation").hide()
+        });
+        $("#policyStartDate").datepicker({
+            minDate: 0,
+            "dateFormat": "YYYY-MM-DD"
+        })
+        $("#dateOfBirth").datepicker({
+            defaultDate: "-18y",
+            maxDate: "-18y"
+        })
+        $("#form1").submit(function (e) {
+            e.preventDefault();
+        });
+        $("#premiumCalculate").click(() => {
+            // Perform Validation over here     
+            console.log("Clicked Button ")
+            $.post("http://192.168.1.205:8080/issueQuote",
+                {
+                    "ProductCode": "FRAUDSHIELD",
+                    "ProductVersion": "1.0",
+                    "EffectiveDate": "2022-04-16",
+                    "Duration": "1",
+                    "IMDCode": "IMD0001",
+                    "PlanId": "Annual",
+                    "CustomerName": "Sairaj P",
+                    "PostCode": "605002",
+                    "Address": "some address",
+                    "Email": "abc@gmail.com",
+                    "MobileNo": "9097876556",
+                    "DOB": "1998-09-09 ",
+                    "NomineeName": "Mniuya"
+                },
+                function (data, status) {
+                    
+                    alert("Data: " + data + "\nStatus: " + status);
+                });
+
+        })
+
+    </script>
+</body>
+
+</html>
