@@ -169,8 +169,28 @@
 
         })
         function issuePolicy(quotationNo) {
-            productToSend = console.log(quotationNo)
-            console.log("Inside Issue Policy with Quotation number " + productToSend)
+            console.log("Inside Issue Policy with Quotation number " + quotationNo)
+            let dataToSend = {
+                "QuotationNo": quotationNo
+            }
+            $.ajax({
+                type: "post",
+                url: "http://localhost:4000/issuePolicy",
+                success: function (msg) {
+                    if (msg) {
+                        console.log("After Issuing Policy ")
+                        console.log(msg)
+                    } else {
+                        console.log("No Message Recieved ")
+                    }
+                },
+                error: function (err) {
+                    console.log("Error Occured while calling json ")
+                },
+                dataType: "json",
+                contentType: 'application/json',
+                data: JSON.stringify(dataToSend)
+            });
         }
         function getSingleCardBody(cardData, number) {
             let htmlBody = '<div class="col-4"> <div class="card">' +
@@ -178,7 +198,7 @@
                 '<h5 class="card-title">' + cardData.Carrier + '</h5>' +
                 '<p class="card-text">Premium :' + cardData.Premium + ' </p>' +
                 '<p class="card-text">Quotation : ' + cardData.QuotationNo + '</p>' +
-                "<button  class='btn btn-primary' id='buybtn" + number + "' onclick=issuePolicy("+cardData.QuotationNo+")>Buy Now</button></div></div></div>"
+                "<button  class='btn btn-primary' id='buybtn" + number + "' onclick=issuePolicy(\'" + cardData.QuotationNo + "\')>Buy Now</button></div></div></div>"
             return htmlBody
         }
 
