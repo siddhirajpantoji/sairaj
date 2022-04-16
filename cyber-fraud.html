@@ -37,7 +37,7 @@
 
         </div>
         <div id="inputData">
-            <form id="form1">
+            <form id="form1" >
                 <div class="form-group">
                     <label for="policyStartDate">Policy Start Date </label>
 
@@ -104,20 +104,20 @@
         });
         $("#policyStartDate").datepicker({
             minDate: 0,
-            "dateFormat": "YYYY-MM-DD"
+            "dateFormat": "yy-mm-dd"
         })
         $("#dateOfBirth").datepicker({
             defaultDate: "-18y",
-            maxDate: "-18y"
+            maxDate: "-18y",
+            "dateFormat": "yy-mm-dd"
         })
         $("#form1").submit(function (e) {
-            e.preventDefault();
+             e.preventDefault();
         });
         $("#premiumCalculate").click(() => {
             // Perform Validation over here     
             console.log("Clicked Button ")
-            $.post("http://192.168.1.205:8080/issueQuote",
-                {
+            let dataToSend = {
                     "ProductCode": "FRAUDSHIELD",
                     "ProductVersion": "1.0",
                     "EffectiveDate": "2022-04-16",
@@ -129,13 +129,27 @@
                     "Address": "some address",
                     "Email": "abc@gmail.com",
                     "MobileNo": "9097876556",
-                    "DOB": "1998-09-09 ",
+                    "DOB": "1998-09-09",
                     "NomineeName": "Mniuya"
+                }
+            $.ajax({
+                type: "post",
+                url: "http://192.168.1.205:8080/v1/issueQuote",
+                success: function (msg) {
+                    if (msg) {
+                        console.log(msg)
+                    } else {
+                        alert("Cannot add to list !");
+                    }
                 },
-                function (data, status) {
-                    
-                    alert("Data: " + data + "\nStatus: " + status);
-                });
+                error: function(err){
+                    console.log("Error Occured while calling json ")
+                },
+                dataType:"json",
+                contentType: 'application/json',
+                data: JSON.stringify(dataToSend)
+            });
+          
 
         })
 
