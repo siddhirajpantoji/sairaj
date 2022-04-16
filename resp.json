@@ -1,0 +1,35 @@
+{
+    "Response": [
+        {
+            "QuotationNo": "QICICI000001",
+            "Premium": 499,
+            "Carrier": "ICICI"
+        },
+        {
+            "QuotationNo": "QAXIS000001",
+            "Premium": 599,
+            "Carrier": "AXIS"
+        },
+        {
+            "QuotationNo": "QLIC000001",
+            "Premium": 599,
+            "Carrier": "LIC"
+        }
+    ],
+    "Status": "success",
+    "Data": {
+        "ProductCode": "FRAUDSHIELD",
+        "ProductVersion": "1.0",
+        "EffectiveDate": "2022-04-16",
+        "Duration": "1",
+        "IMDCode": "IMD0001",
+        "PlanId": "Annual",
+        "CustomerName": "Sairaj P",
+        "PostCode": "605002",
+        "Address": "some address",
+        "Email": "abc@gmail.com",
+        "MobileNo": "9097876556",
+        "DOB": "1998-09-09 ",
+        "NomineeName": "Mniuya"
+    }
+}
