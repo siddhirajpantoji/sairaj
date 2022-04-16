@@ -42,35 +42,49 @@
                     <label for="policyStartDate">Policy Start Date </label>
 
                     <input type="text" id="policyStartDate" aria-describedby="emailHelp"
-                        placeholder="Enter Policy Start Date ">
+                        placeholder="Enter Policy Start Date " required>
+                    <div class="valid-feedback">Valid.</div>
+                    <div class="invalid-feedback">Please fill out this field.</div>
 
                 </div>
                 <div class="form-group">
                     <label for="customerName">Customer Name</label>
-                    <input type="text" class="form-control" id="customerName" placeholder="Enter Customer Name">
+                    <input type="text" class="form-control" id="customerName" placeholder="Enter Customer Name"
+                        required>
+                    <div class="valid-feedback">Valid.</div>
+                    <div class="invalid-feedback">Please fill out this field.</div>
                 </div>
                 <div class="form-group">
                     <label for="customerContact">Mobile Number</label>
-                    <input type="tel" class="form-control" id="customerContact" placeholder="Enter Mobile Number">
+                    <input type="tel" class="form-control" id="customerContact" placeholder="Enter Mobile Number"
+                        required>
+                    <div class="valid-feedback">Valid.</div>
+                    <div class="invalid-feedback">Please fill out this field.</div>
                 </div>
                 <div class="form-group">
                     <label for="customerEmail">Email address</label>
-                    <input type="email" class="form-control" id="customerEmail" placeholder="Enter Email">
+                    <input type="email" class="form-control" id="customerEmail" placeholder="Enter Email" required>
+                    <div class="valid-feedback">Valid.</div>
+                    <div class="invalid-feedback">Please fill out this field.</div>
                 </div>
                 <div class="form-group">
                     <label for="dateOfBirth">Enter Date of Birth</label>
-                    <input type="text" id="dateOfBirth" placeholder="Enter Date of Birth">
+                    <input type="text" id="dateOfBirth" placeholder="Enter Date of Birth" required>
+                    <div class="valid-feedback">Valid.</div>
+                    <div class="invalid-feedback">Please fill out this field.</div>
                 </div>
                 <div class="form-group">
                     <label for="planType">Select Plan Type</label>
                     <select class="form-control" id="planType">
-                        <option value="Monthly">Monthly</option>
+                        <option value="Monthly" selected>Monthly</option>
                         <option value="Annual">Annual</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="nomineeName">Select Plan Type</label>
-                    <input type="text" class="form-control" id="nomineeName" placeholder="Enter Nominee Name">
+                    <input type="text" class="form-control" id="nomineeName" placeholder="Enter Nominee Name" required>
+                    <div class="valid-feedback">Valid.</div>
+                    <div class="invalid-feedback">Please fill out this field.</div>
                 </div>
                 <button class="btn btn-primary" id="premiumCalculate">Calculate Premium</button>
             </div>
@@ -105,69 +119,121 @@
         });
         $("#policyStartDate").datepicker({
             minDate: 0,
-            "dateFormat": "yy-mm-dd"
+            "dateFormat": "yy-mm-dd",
+            changeMonth: true,
+            changeYear: true
         })
         $("#dateOfBirth").datepicker({
             defaultDate: "-18y",
             maxDate: "-18y",
-            "dateFormat": "yy-mm-dd"
+            "dateFormat": "yy-mm-dd",
+            changeMonth: true,
+            changeYear: true
         })
         $("#form1").submit(function (e) {
             e.preventDefault();
 
         });
         $("#premiumCalculate").click(() => {
+            $("#errorMessages").hide()
             // Perform Validation over here    
+            let toProceed = true
+            let policyDate = $("#policyStartDate").val()
 
-            console.log("Clicked Button ")
-            let dataToSend = {
-                "ProductCode": "FRAUDSHIELD",
-                "ProductVersion": "1.0",
-                "EffectiveDate": "2022-04-16",
-                "Duration": "1",
-                "IMDCode": "IMD0001",
-                "PlanId": "Annual",
-                "CustomerName": "Sairaj P",
-                "PostCode": "605002",
-                "Address": "some address",
-                "Email": "abc@gmail.com",
-                "MobileNo": "9097876556",
-                "DOB": "1998-09-09",
-                "NomineeName": "Mniuya"
+            if (policyDate.length == 0) {
+
+                $("#policyStartDate").focus()
+                $("#errorMessages").append("Please enter Valid  Policy Date\n")
+                toProceed = false
             }
-            $.ajax({
-                type: "post",
-                url: "http://localhost:4000/issueQuote",
-                success: function (msg) {
-                    if (msg) {
-                        console.log(typeof (msg))
-                        console.log(msg)
-                        products = msg.Response
-                        console.log(products)
+            let planType = $("#planType").val()
+            if (planType.length == 0) {
 
-                        let innerHtml = '<div class="row top-buffer">'
-                        for (count = 0; count < products.length; count++) {
-                            innerHtml = innerHtml + getSingleCardBody(products[count], count)
+                $("#planType").focus()
+                $("#errorMessages").append("Please Select Plan Type\n")
+                toProceed = false
+            }
+            let customerName = $("#customerName").val()
+            if (!allLetter(customerName)) {
 
+                $("#customerName").focus()
+                $("#errorMessages").append("Enter Valid Customer Name \n")
+                toProceed = false
+            }
+            let customerEmail = $("#customerEmail").val()
+            if (!validateEmail(customerEmail)) {
+
+                $("#customerEmail").focus()
+                $("#errorMessages").append("Enter Valid Email \n")
+                toProceed = false
+            }
+            if (!toProceed) {
+                $("#errorMessages").show()
+                console.log("Shown Error Message ")
+                return false
+            }
+            console.log("Clicked Button ")
+            if (toProceed) {
+
+                let dataToSend = {
+                    "ProductCode": "FRAUDSHIELD",
+                    "ProductVersion": "1.0",
+                    "EffectiveDate": $("#policyStartDate").val(),
+                    "Duration": "1",
+                    "IMDCode": "IMD0001",
+                    "PlanId": $("#planType").val(),
+                    "CustomerName": $("customerName").val(),
+                    "Email": $("#customerEmail").val(),
+                    "MobileNo": $("#customerContact").val(),
+                    "DOB": $("#dateOfBirth").val(),
+                    "NomineeName": $("#nomineeName").val()
+                }
+                $.ajax({
+                    type: "post",
+                    url: "http://localhost:4000/issueQuote",
+                    success: function (msg) {
+                        if (msg) {
+                            console.log(typeof (msg))
+                            console.log(msg)
+                            products = msg.Response
+                            console.log(products)
+
+                            let innerHtml = '<div class="row top-buffer">'
+                            for (count = 0; count < products.length; count++) {
+                                innerHtml = innerHtml + getSingleCardBody(products[count], count)
+
+                            }
+                            innerHtml = innerHtml + '</div>'
+                            $("#quotation").html(innerHtml)
+
+                            $("#quotation").show()
+                            $("#inputData").hide()
+                        } else {
+                            console.log("No Message Recieved ")
                         }
-                        innerHtml = innerHtml + '</div>'
-                        $("#quotation").html(innerHtml)
+                    },
+                    error: function (err) {
+                        console.log("Error Occured while calling json ")
+                    },
+                    dataType: "json",
+                    contentType: 'application/json',
+                    data: JSON.stringify(dataToSend)
+                });
+            }
 
-                        $("#quotation").show()
-                        $("#inputData").hide()
-                    } else {
-                        console.log("No Message Recieved ")
-                    }
-                },
-                error: function (err) {
-                    console.log("Error Occured while calling json ")
-                },
-                dataType: "json",
-                contentType: 'application/json',
-                data: JSON.stringify(dataToSend)
-            });
 
         })
+
+        function allLetter(inputtxt) {
+            var letters = /^[A-Za-z ]+$/;
+            if (inputtxt.match(letters)) {
+                return true;
+            }
+            else {
+                //alert("message");
+                return false;
+            }
+        }
         function issuePolicy(quotationNo) {
             console.log("Inside Issue Policy with Quotation number " + quotationNo)
             let dataToSend = {
@@ -179,7 +245,10 @@
                 success: function (msg) {
                     if (msg) {
                         console.log("After Issuing Policy ")
+                        alert("Your Policy " + msg.PolicyNo + " has been generated Successfully")
                         console.log(msg)
+                        window.location.href = "index.html"
+
                     } else {
                         console.log("No Message Recieved ")
                     }
@@ -202,6 +271,13 @@
             return htmlBody
         }
 
+        const validateEmail = (email) => {
+            return String(email)
+                .toLowerCase()
+                .match(
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                );
+        };
     </script>
 </body>
 
